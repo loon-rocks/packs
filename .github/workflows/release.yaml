@@ -3,6 +3,11 @@ name: release
 on:
   push:
     tags: ["*/v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing pack release tag to publish, such as github/v1.0.1"
+        required: true
 
 permissions:
   contents: write
@@ -14,15 +19,17 @@ jobs:
     env:
       SLACK_BOT_TOKEN: xoxb-not-a-real-token
       DIVE_STORAGE: memory
-      TAG: ${{ github.ref_name }}
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0
       - name: Read the tag
         run: |
           echo "PACK_DIR=${TAG%/v*}" >> "$GITHUB_ENV"
           echo "VERSION=v${TAG##*/v}" >> "$GITHUB_ENV"
+          echo "COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - name: Check the pack's binaries were built from its source
         run: |
           if [ ! -f "$PACK_DIR/src/Cargo.toml" ]; then
@@ -46,7 +53,6 @@ jobs:
         run: |
           project="$RUNNER_TEMP/project"
           mkdir -p "$project/.dive"
-          printf 'version = 6\n' > "$project/.dive/config.toml"
           cd "$project"
           dive pack add "file://$GITHUB_WORKSPACE" --path "$PACK_DIR" --ref "$VERSION"
           echo "HASH=$(sed -n 's/^hash = "\(.*\)"$/\1/p' .dive/packs.lock)" >> "$GITHUB_ENV"
@@ -71,7 +77,7 @@ jobs:
             echo "|---|---|"
             echo "| Install | \`dive pack add $PACK_DIR --ref $VERSION\` |"
             echo "| Tag | \`$TAG\` |"
-            echo "| Commit | \`$GITHUB_SHA\` |"
+            echo "| Commit | \`$COMMIT\` |"
             echo "| Content hash | \`$HASH\` |"
             echo
             echo "After installing, \`.dive/packs.lock\` records this tag, commit and content hash. This tag is protected and will never move or be deleted."
