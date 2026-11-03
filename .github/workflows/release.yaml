@@ -15,7 +15,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-24.04
-    container: ghcr.io/loon-rocks/dive:v0.17.0
+    container: ghcr.io/loon-rocks/dive:v0.18.0
     env:
       SLACK_BOT_TOKEN: xoxb-not-a-real-token
       DIVE_STORAGE: memory
