@@ -10,15 +10,15 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-24.04
+    container: ghcr.io/loon-rocks/dive:v0.17.0
     env:
       SLACK_BOT_TOKEN: xoxb-not-a-real-token
-      GRAPH_STORAGE: memory
+      DIVE_STORAGE: memory
       TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
-      - uses: ./.github/actions/graph
       - name: Read the tag
         run: |
           echo "PACK_DIR=${TAG%/v*}" >> "$GITHUB_ENV"
@@ -41,15 +41,15 @@ jobs:
             exit 1
           fi
       - name: Test the pack at this tag
-        run: graph pack test "$PACK_DIR"
+        run: dive pack test "$PACK_DIR"
       - name: Install the release the way users do
         run: |
           project="$RUNNER_TEMP/project"
-          mkdir -p "$project/.graph"
-          printf 'version = 4\n' > "$project/.graph/config.toml"
+          mkdir -p "$project/.dive"
+          printf 'version = 6\n' > "$project/.dive/config.toml"
           cd "$project"
-          graph pack add "file://$GITHUB_WORKSPACE" --path "$PACK_DIR" --ref "$VERSION"
-          echo "HASH=$(sed -n 's/^hash = "\(.*\)"$/\1/p' .graph/packs.lock)" >> "$GITHUB_ENV"
+          dive pack add "file://$GITHUB_WORKSPACE" --path "$PACK_DIR" --ref "$VERSION"
+          echo "HASH=$(sed -n 's/^hash = "\(.*\)"$/\1/p' .dive/packs.lock)" >> "$GITHUB_ENV"
       - name: Write the release notes
         run: |
           notes="$RUNNER_TEMP/notes.md"
@@ -69,12 +69,12 @@ jobs:
             echo
             echo "| | |"
             echo "|---|---|"
-            echo "| Install | \`graph pack add $PACK_DIR --ref $VERSION\` |"
+            echo "| Install | \`dive pack add $PACK_DIR --ref $VERSION\` |"
             echo "| Tag | \`$TAG\` |"
             echo "| Commit | \`$GITHUB_SHA\` |"
             echo "| Content hash | \`$HASH\` |"
             echo
-            echo "After installing, \`.graph/packs.lock\` records this tag, commit and content hash. This tag is protected and will never move or be deleted."
+            echo "After installing, \`.dive/packs.lock\` records this tag, commit and content hash. This tag is protected and will never move or be deleted."
           } > "$notes"
           echo "NOTES=$notes" >> "$GITHUB_ENV"
       - name: Publish the release

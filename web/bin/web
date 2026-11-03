@@ -28,7 +28,7 @@ esac
 
 binary="$dir/web-$os-$arch"
 if [ ! -x "$binary" ]; then
-  echo "web: $binary is missing or not executable; reinstall the pack with graph pack add web" >&2
+  echo "web: $binary is missing or not executable; reinstall the pack with dive pack add web" >&2
   exit 1
 fi
 

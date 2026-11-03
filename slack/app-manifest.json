@@ -1,10 +1,10 @@
 {
     "display_information": {
-        "name": "Graph CI"
+        "name": "Dive CI"
     },
     "features": {
         "bot_user": {
-            "display_name": "Graph CI",
+            "display_name": "Dive CI",
             "always_online": false
         }
     },
