@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.2
+
+- Graph is now Dive, and this pack's home is now `github.com/loon-rocks/packs`. The pack requires Dive v0.17 or later, installs with `dive pack add web`, and finds its binary through `DIVE_PACK_DIR`. The tools are unchanged.
+
 ## v1.0.1
 
 - The first release of the pack. The `web/v1.0.0` tag points at a commit from before the pack existed, so it can't be installed; use this release.

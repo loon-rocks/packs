@@ -1,10 +1,10 @@
 # Contributing
 
-Thanks for your interest in improving graph-packs.
+Thanks for your interest in improving Dive's packs.
 
 ## Adding a pack
 
-If you'd like to get a pack added, open a pull request. Start from [graph-pack-template](https://github.com/tylerdavis/graph-pack-template) and put your pack in its own top-level directory. Make sure `graph pack test` passes in that directory before you open the pull request.
+If you'd like to get a pack added, open a pull request. Start from [pack-template](https://github.com/loon-rocks/pack-template) and put your pack in its own top-level directory. Make sure `dive pack test` passes in that directory before you open the pull request.
 
 ## Changing an existing pack
 

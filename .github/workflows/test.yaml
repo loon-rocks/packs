@@ -12,12 +12,12 @@ permissions:
 jobs:
   packs:
     runs-on: ubuntu-24.04
+    container: ghcr.io/loon-rocks/dive:v0.17.0
     env:
       SLACK_BOT_TOKEN: xoxb-not-a-real-token
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: ./.github/actions/graph
-      - run: graph pack test
+      - run: dive pack test
 
   web-source:
     runs-on: ubuntu-24.04
